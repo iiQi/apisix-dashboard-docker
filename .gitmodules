@@ -1,0 +1,4 @@
+[submodule "src"]
+	path = src
+	url = https://github.com/apache/apisix-dashboard.git
+	branch = v2.0
