@@ -1,0 +1,33 @@
+FROM golang:1.13.8 AS builder
+
+WORKDIR /go/src/github.com/apisix/manager-api
+COPY ./src/api .
+RUN mkdir -p /go/manager-api/build-tools \
+    && go env -w GOPROXY=https://goproxy.io,direct \
+    && export GOPROXY=https://goproxy.io \
+    && go build -o /go/manager-api/manager-api \
+    && mv /go/src/github.com/apisix/manager-api/build-tools/* /go/manager-api/build-tools/
+
+RUN wget https://github.com/api7/dag-to-lua/archive/v1.1.tar.gz \
+    && tar -zxvf v1.1.tar.gz \
+    && mkdir -p /go/manager-api/dag-to-lua \
+    && mv -u ./dag-to-lua-1.1/lib/* /go/manager-api/dag-to-lua/
+
+FROM alpine:3.11
+
+RUN mkdir -p /go/manager-api \
+   && apk add --no-cache ca-certificates lua5.1 libc6-compat \
+   && update-ca-certificates \
+   && echo "hosts: files dns" > /etc/nsswitch.conf 
+
+WORKDIR /go/manager-api
+
+COPY --from=builder /go/manager-api/ .
+COPY patch/manager .
+
+
+EXPOSE 8080
+
+RUN chmod +x ./entrypoint
+
+CMD [ "/go/manager-api/entrypoint"]

@@ -1,0 +1,23 @@
+version: "3.6"
+services:
+    manager:
+      image: iiqi/apisix-manager:2.0.0-RC2
+      container_name: apisix-manager
+      environment:
+        APIX_ETCD_ENDPOINTS: 127.0.0.1:2379
+        ENV: prod
+      networks:
+        - apisix
+    dashboard:
+      image: iiqi/apisix-dashboard:2.0.0-RC2
+      container_name: apisix-dashboard
+      environment:
+        MANAGER_HOST: manager:8080
+      ports:
+        - 80:80
+      networks:
+        - apisix
+networks:
+  apisix:
+    name: apisix
+    driver: bridge

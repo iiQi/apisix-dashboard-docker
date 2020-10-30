@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+if [ "$APIX_ETCD_ENDPOINTS" != "" ]; then
+  sed -i "s#\"endpoints\":\"127.0.0.1:2379\"#\"endpoints\":\"$APIX_ETCD_ENDPOINTS\"#g" /go/manager-api/conf/conf.json
+fi
+
+if [ "$APISIX_CONF_PATH" = "" ]; then
+  export APISIX_CONF_PATH="/go/manager-api/conf"
+fi
+
+if [ "$ENV" = "" ]; then
+  export ENV="prod"
+fi
+
+exec ./manager-api
