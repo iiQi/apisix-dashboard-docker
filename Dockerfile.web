@@ -2,7 +2,7 @@ FROM node:12 as builder
 
 WORKDIR /usr/src/app/
 
-COPY ./src/frontend ./
+COPY ./src/web ./
 
 RUN set -eux; \
     yarn config set registry https://registry.npm.taobao.org/; \
@@ -14,7 +14,7 @@ FROM nginx:1.19-alpine
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
+COPY --from=builder /usr/src/output/html /usr/share/nginx/html
 COPY ./patch/dashboard /
 
 RUN chmod +x /usr/bin/entrypoint;
