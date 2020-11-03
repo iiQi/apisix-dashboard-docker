@@ -1,7 +1,7 @@
 version: "3.6"
 services:
     manager:
-      image: iiqi/apisix-manager:2.0.0-RC2
+      image: iiqi/apisix-manager:2.0.0-RC3
       container_name: apisix-manager
       environment:
         # apisix的ETCD地址
@@ -10,7 +10,7 @@ services:
       networks:
         - apisix
     dashboard:
-      image: iiqi/apisix-dashboard:2.0.0-RC2
+      image: iiqi/apisix-dashboard:2.0.0-RC3
       container_name: apisix-dashboard
       environment:
         # manager-api 接口地址
