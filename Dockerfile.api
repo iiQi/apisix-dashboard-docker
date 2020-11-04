@@ -2,10 +2,12 @@ FROM golang:1.13.8 AS builder
 
 WORKDIR /go/src/github.com/apisix/manager-api
 COPY ./src/api .
-RUN mkdir -p /go/manager-api/build-tools \
+RUN mkdir -p /go/manager-api/conf \
+    mkdir -p /go/manager-api/build-tools \
     && go env -w GOPROXY=https://goproxy.io,direct \
     && export GOPROXY=https://goproxy.io \
     && go build -o /go/manager-api/manager-api \
+    && mv /go/src/github.com/apisix/manager-api/conf/*.json /go/manager-api/conf/ \
     && mv /go/src/github.com/apisix/manager-api/build-tools/* /go/manager-api/build-tools/
 
 RUN wget https://github.com/api7/dag-to-lua/archive/v1.1.tar.gz \
